@@ -63,6 +63,21 @@
             data: data
         })
     },
+    saveDraft: function(){
+        $.ajax({
+            type: "POST",
+            url: "index.aspx/SaveDraft",
+            data: "{json: '" + JSON.stringify(this.state.data) + "'}",
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            error: function(error){
+                console.log(error);
+            },
+            success: function (data) {
+                console.log(JSON.parse(data.d));
+            }
+        })
+    },
     render: function () {
         var capture = this;
         return(
@@ -73,6 +88,7 @@
                             return (<SidebarItem id={item.itemId} key={i} setView={capture.setView} viewLabel={item.viewLabel} active={item.active ? "active" : "" }/>);
                         })
                     }
+                    <button className="draft-button" onClick={this.saveDraft}>Save Draft</button>
                 </div>
                 <div className="app-body">
                     {

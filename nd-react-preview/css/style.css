@@ -116,3 +116,16 @@ h4.section-title{
     transition: all .2s;
     outline: none;
 }
+.draft-button{
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    width: 166px;
+    margin-left: -83px;
+    border: none;
+    border-radius: 6px;
+    background: #0496ff;
+    height: 30px;
+    font-weight: bold;
+    color: #fff;
+}
