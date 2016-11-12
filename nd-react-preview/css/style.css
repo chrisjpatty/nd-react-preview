@@ -24,14 +24,14 @@
     background-color: #222e50;
 }
 .app-body{
-    width: 515px;
+    width: 517px;
     height: 617px;
-    right: -15px;
+    right: -17px;
     top: 0px;
     position: absolute;
     background-color: #fff;
     overflow: scroll;
-    padding-bottom: 15px;
+    padding-bottom: 75px;
 }
 .sidebar-item{
 }
@@ -145,13 +145,20 @@ h4.section-title{
     background: #2c80d0;
     position: absolute;
     display: block;
+    -webkit-font-smoothing: antialiased;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: zoomIn;
+    animation-name: zoomIn;
 }
 .body-check-field input{
     display: none;
 }
 .body-check-field .text-label{
     clear: none;
-    width: 420px;
+    max-width: 420px;
     margin-left: 6px;
     margin-top: 2px;
 }
@@ -230,4 +237,28 @@ h4.section-title{
     animation-fill-mode: both;
     -webkit-animation-name: fadeInRight;
     animation-name: fadeInRight;
+}
+.body-control-shelf{
+    width: 500px;
+    height: 60px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background: #e2e2e2;
+    /*border-top: 1px solid #efefef;
+    box-shadow: 0px -1px 6px rgba(0,0,0,.3);*/
+}
+.next-button{
+    float: right;
+    clear: none;
+    left: auto;
+    top: 15px;
+    right: 30px;
+    width: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: 10px;
+    position: relative;
+    background: #2c80d0;
+    outline: none;
 }

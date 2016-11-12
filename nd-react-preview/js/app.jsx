@@ -37,6 +37,30 @@
             activeView: id
         })
     },
+    incrementView: function(){
+        var data = this.props.data;
+        var increment;
+
+        if (this.state.activeView == data.length) {
+            increment = this.state.activeView;
+        } else {
+            increment = this.state.activeView + 1;
+        }
+
+        data = data.filter(function (item) {
+            if (item.itemId == increment) {
+                item.active = true;
+            } else {
+                item.active = false;
+            }
+            return item;
+        })
+
+        this.setState({
+            data: data,
+            activeView: increment
+        })
+    },
     setValid: function (fieldId, isValid, sectionId) {
         //console.log(fieldId, sectionId, this.state.activeView, isValid);
         var activeView = this.state.activeView;
@@ -127,7 +151,11 @@
                         <AppBody data={this.getViewData()} setValid={this.setValid} setField={this.setField} />
                         :
                         null
+
                     }
+                </div>
+                <div className="body-control-shelf">
+                    <button className="draft-button next-button" onClick={this.incrementView} >Next Step</button>
                 </div>
             </div>
         )
