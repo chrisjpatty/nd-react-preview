@@ -7,7 +7,7 @@
     },
     getInitialState: function(){
         return{
-            activeView: 1
+            activeView: 2
         }
     },
     getViewData: function(){
@@ -37,8 +37,8 @@
             activeView: id
         })
     },
-    setField: function (fieldId, value, sectionId) {
-        //console.log(fieldId, sectionId, this.state.activeView, value);
+    setValid: function (fieldId, isValid, sectionId) {
+        //console.log(fieldId, sectionId, this.state.activeView, isValid);
         var activeView = this.state.activeView;
         var data = this.props.data;
         data = data.filter(function (item) {
@@ -47,11 +47,42 @@
                     if (section.sectionId == sectionId) {
                         var fields = section.fields.filter(function (field) {
                             if (field.fieldId == fieldId) {
-                                field.value = value;
+                                field.isValid = isValid;
                             }
                             return field;
                         })
                         section.fields = fields;
+                    }
+                    return section;
+                })
+                item.sections = sections;
+            }
+            return item;
+        })
+        this.setState({
+            data: data
+        })
+    },
+    setField: function (fieldId, value, sectionId, conditional) {
+        //console.log(fieldId, sectionId, this.state.activeView, value);
+        //console.log("Conditional", conditional, "Value", value);
+        var activeView = this.state.activeView;
+        var data = this.props.data;
+        data = data.filter(function (item) {
+            if (item.itemId == activeView) {
+                var sections = item.sections.filter(function (section) {
+                    if (section.sectionId == sectionId) {
+                        if (conditional) {
+                            section.conditionField.value = value;
+                        } else {
+                            var fields = section.fields.filter(function (field) {
+                                if (field.fieldId == fieldId) {
+                                    field.isValid = isValid;
+                                }
+                                return field;
+                            })
+                            section.fields = fields;
+                        }
                     }
                     return section;
                 })
@@ -93,7 +124,7 @@
                 <div className="app-body">
                     {
                         this.state.activeView != null ?
-                        <AppBody data={this.getViewData()} setField={this.setField} />
+                        <AppBody data={this.getViewData()} setValid={this.setValid} setField={this.setField} />
                         :
                         null
                     }
@@ -119,8 +150,11 @@ var SidebarItem = React.createClass({
 })
 
 var AppBody = React.createClass({
-    setField: function (fieldId, value, sectionId) {
-        this.props.setField(fieldId, value, sectionId);
+    setField: function (fieldId, value, sectionId, conditional) {
+        this.props.setField(fieldId, value, sectionId, conditional);
+    },
+    setValid: function (fieldId, isValid, sectionId) {
+        this.props.setValid(fieldId, isValid, sectionId);
     },
     render: function () {
         var capture = this;
@@ -128,7 +162,7 @@ var AppBody = React.createClass({
             <div>
                 {
                     this.props.data.sections.map(function (section, i) {
-                        return <BodySection title={section.title} sectionId={section.sectionId} fields={section.fields} type={section.type} setField={capture.setField} key={i} />;
+                        return <BodySection title={section.title} sectionId={section.sectionId} conditional={section.conditional} conditionField={section.conditionField} fields={section.fields} type={section.type} setValid={capture.setValid} setField={capture.setField} key={i} />;
                     })
                 }
             </div>
@@ -137,8 +171,36 @@ var AppBody = React.createClass({
 })
 
 var BodySection = React.createClass({
-    setField: function(fieldId, value){
-        this.props.setField(fieldId, value, this.props.sectionId);
+    setField: function(fieldId, value, conditional){
+        this.props.setField(fieldId, value, this.props.sectionId, conditional);
+    },
+    setValid: function(fieldId, isValid){
+        this.props.setValid(fieldId, isValid, this.props.sectionId);
+    },
+    renderFields: function () {
+        var capture = this;
+        if (this.props.conditional) {
+            if (this.props.conditionField.value) {
+                return(
+                <div>
+                    <Field field={this.props.conditionField} fieldId={this.props.conditionField.fieldId} setValid={capture.setValid} setField={capture.setField} width={this.props.conditionField.sizeOverride ? this.props.conditionField.width : "inherit"} clear={this.props.conditionField.clear} options={this.props.conditionField.options }/>
+                    {
+                        this.props.fields.map(function (field, i) {
+                            return <Field field={field} key={i} fieldId={field.fieldId} setValid={capture.setValid} setField={capture.setField} width={field.sizeOverride ? field.width : "inherit"} clear={field.clear} options={field.options}/>
+                        })
+                    }
+                </div>
+                )
+            } else {
+                return <Field field={this.props.conditionField} fieldId={this.props.conditionField.fieldId} setValid={capture.setValid} setField={capture.setField} width={this.props.conditionField.sizeOverride ? this.props.conditionField.width : "inherit"} clear={this.props.conditionField.clear} options={this.props.conditionField.options }/>
+            }
+        } else {
+            return (
+                this.props.fields.map(function (field, i) {
+                    return <Field field={field} key={i} fieldId={field.fieldId} setValid={capture.setValid} setField={capture.setField} width={field.sizeOverride ? field.width : "inherit"} clear={field.clear} options={field.options}/>
+                })    
+            )
+        }
     },
     render: function () {
         var capture = this;
@@ -146,9 +208,7 @@ var BodySection = React.createClass({
             <div className="body-section">
                 <h4 className="section-title">{this.props.title}</h4>
                 {
-                    this.props.fields.map(function (field, i) {
-                        return <Field field={field} key={i} fieldId={field.fieldId} setField={capture.setField} width={field.sizeOverride ? field.width : "inherit"} clear={field.clear} options={field.options}/>
-                    })
+                    this.renderFields()
                 }
             </div>    
         )
@@ -157,7 +217,61 @@ var BodySection = React.createClass({
 
 var Field = React.createClass({
     setField: function (event) {
-        this.props.setField(this.props.fieldId, event.target.value);
+        switch (this.props.field.allowedValues) {
+            case "phone":
+                var masked = VMasker.toPattern(event.target.value, "(999) 999-9999");
+                this.props.setField(this.props.fieldId, masked);
+                break;
+            default:
+                var conditional = false;
+                if (this.props.field.type == "conditionalCheck") {
+                    conditional = true;
+                    this.props.setField(this.props.fieldId, event.target.checked, conditional);
+                }
+                this.props.setField(this.props.fieldId, event.target.value);
+                break;
+        }       
+    },
+    setValid: function (isValid){
+        this.props.setValid(this.props.fieldId, isValid);
+    },
+    validate: function (e, override) {
+        if (this.props.field.required) {
+            if(!override){
+                switch (this.props.field.allowedValues) {
+                    case "all":
+                        if (e.target.value == "") {
+                            this.setValid(false);
+                        } else {
+                            this.setValid(true);
+                        }
+                        break;
+                    case "phone":
+                        if (e.target.value.length == 14) {
+                            this.setValid(true)
+                        } else {
+                            this.setValid(false)
+                        }
+                        break;
+                    case "email":
+                        function validateEmail(email) {
+                            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                            return re.test(email);
+                        }
+                        if (validateEmail(e.target.value)) {
+                            this.setValid(true)
+                        } else {
+                            this.setValid(false)
+                        }
+                        break;
+                }
+            } else {
+                this.setValid(null);
+            }
+        }
+    },
+    focusField: function(e){
+        this.validate(e, true);
     },
     getField: function(){
         var field = this.props.field;
@@ -165,12 +279,32 @@ var Field = React.createClass({
             width: this.props.width,
             clear: this.props.clear
         }
+        var valid = null;
+        if (field.isValid) {
+            valid = "valid"
+        } else if(field.isValid == null) {
+            valid = ""
+        } else {
+            valid = "invalid"
+        }
         switch (field.type) {
             case "text":
                 return (
                     <div className="body-field-wrapper body-text-field" style={style}>
-                        <label className="text-label" >{field.label}</label>
-                        <input type="text" onChange={this.setField} value={field.value}/>
+                        <label className={field.required ? "text-label required" : "text-label " } >{field.label}</label>
+                        <span className={"input-wrapper " + valid}>
+                            <input type="text" onChange={this.setField} onBlur={this.validate} onFocus={this.focusField} value={field.value} />
+                        </span>
+                    </div>
+                )
+                break;
+            case "conditionalCheck":
+            case "check":
+                return (
+                    <div className="body-field-wrapper body-check-field" style={style}>
+                        <input type="checkbox" id={field.conditionalId} onChange={this.setField} onBlur={this.validate} onFocus={this.focusField} value={field.value} checked={field.value}/>
+                        <label className={"input-wrapper " + valid} htmlFor={field.conditionalId}></label>
+                        <label className={field.required ? "text-label required" : "text-label " }>{field.label}</label>
                     </div>
                 )
                 break;
