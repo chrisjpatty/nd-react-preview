@@ -7,7 +7,7 @@
     },
     getInitialState: function(){
         return{
-            activeView: 2
+            activeView: 1
         }
     },
     getViewData: function(){
@@ -77,7 +77,7 @@
                         } else {
                             var fields = section.fields.filter(function (field) {
                                 if (field.fieldId == fieldId) {
-                                    field.isValid = isValid;
+                                    field.value = value;
                                 }
                                 return field;
                             })
