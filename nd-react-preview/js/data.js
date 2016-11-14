@@ -84,52 +84,7 @@ var dummyData = [
                 title: "Home Address",
                 type: "custom",
                 sectionId: 2,
-                fields: [
-                    {
-                        fieldId: 1,
-                        type: "text",
-                        label: "Street Address",
-                        sizeOverride: true,
-                        width: "70%",
-                        clear: "both",
-                        placeholder: "346 West St.",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 2,
-                        type: "text",
-                        label: "City",
-                        sizeOverride: true,
-                        width: "40%",
-                        clear: "left",
-                        placeholder: "Smithfield",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 3,
-                        type: "text",
-                        label: "State",
-                        sizeOverride: true,
-                        width: "20%",
-                        clear: "right",
-                        placeholder: "ND",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 4,
-                        type: "text",
-                        label: "Postal Code",
-                        sizeOverride: true,
-                        width: "30%",
-                        clear: "both",
-                        placeholder: "123456",
-                        value: "",
-                        isValid: null
-                    }
-                ]
+                fields: JSON.parse(JSON.stringify(addressBlock))
             },
             {
                 title: "Contact Methods",
@@ -200,7 +155,8 @@ var dummyData = [
                         clear: "both",
                         placeholder: "Doe",
                         value: "",
-                        isValid: null
+                        isValid: null,
+                        required: true
                     },
                     {
                         fieldId: 3,
@@ -211,7 +167,8 @@ var dummyData = [
                         clear: "both",
                         placeholder: "Doe",
                         value: "",
-                        isValid: null
+                        isValid: null,
+                        required: true
                     }
                 ]
             },
@@ -224,59 +181,14 @@ var dummyData = [
                 conditionField: {
                     fieldId: 99,
                     type: "conditionalCheck",
-                    label: "Agent Address is different than Mailing Address",
+                    label: "Agent Address is different than the Mailing Address",
                     sizeOverride: false,
                     conditionalId: "agadd_check",
                     clear: "both",
                     value: false,
                     isValid: null
                 },
-                fields: [
-                    {
-                        fieldId: 1,
-                        type: "text",
-                        label: "Street Address",
-                        sizeOverride: true,
-                        width: "70%",
-                        clear: "both",
-                        placeholder: "346 West St.",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 2,
-                        type: "text",
-                        label: "City",
-                        sizeOverride: true,
-                        width: "40%",
-                        clear: "left",
-                        placeholder: "Smithfield",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 3,
-                        type: "text",
-                        label: "State",
-                        sizeOverride: true,
-                        width: "20%",
-                        clear: "right",
-                        placeholder: "ND",
-                        value: "",
-                        isValid: null
-                    },
-                    {
-                        fieldId: 4,
-                        type: "text",
-                        label: "Postal Code",
-                        sizeOverride: true,
-                        width: "30%",
-                        clear: "both",
-                        placeholder: "123456",
-                        value: "",
-                        isValid: null
-                    }
-                ]
+                fields: JSON.parse(JSON.stringify(addressBlock))
             }
         ]
     }
