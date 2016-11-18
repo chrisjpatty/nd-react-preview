@@ -189,6 +189,27 @@ var dummyData = [
                     isValid: null
                 },
                 fields: JSON.parse(JSON.stringify(addressBlock))
+            },
+            {
+                title: "Server-Side Validation",
+                type: "custom",
+                sectionId: 3,
+                fields: [
+                    {
+                        fieldId: 1,
+                        type: "text",
+                        label: "What sound does a cow make?",
+                        sizeOverride: true,
+                        width: "60%",
+                        clear: "both",
+                        placeholder: "Moo",
+                        value: "",
+                        isValid: null,
+                        required: true,
+                        allowedValues: null,
+                        serverValidation: {type: "cows"}
+                    }
+                ]
             }
         ]
     }

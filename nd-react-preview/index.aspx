@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="index.aspx.cs" Inherits="nd_react_preview.WebForm1" %>
-
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="index.aspx.cs" Inherits="nd_react_preview.WebForm1" ValidateRequest="false" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +13,7 @@
     <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
     <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/vanilla-masker/1.0.9/vanilla-masker.min.js"></script>
+    <script type="text/javascript" src="js/xml2json.min.js"></script>
     <script type="text/babel" src="js/app.jsx"></script>
     <script type="text/javascript" src="js/data.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet" />

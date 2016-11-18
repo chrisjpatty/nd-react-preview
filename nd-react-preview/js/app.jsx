@@ -37,16 +37,48 @@
             activeView: id
         })
     },
-    incrementView: function(){
+    validateItem: function(){
         var data = this.props.data;
-        var increment;
+        var foundItem = {};
+        var capture = this;
+        var x2js = new X2JS();
 
+        data.filter(function (item) {
+            if (item.itemId == capture.state.activeView) {
+                foundItem.item = item;
+            }
+        })
+        var xmlAsStr = x2js.json2xml_str(foundItem);
+        console.log(xmlAsStr);
+
+        $.post("ajaxHandler.ashx?handler=ValidateItem", { data: xmlAsStr }, function (data) {
+            var returnJson = x2js.xml_str2json(data);
+            returnJson.item.active = false;
+            var currentData = capture.state.data;
+            console.log(returnJson.item);
+
+            var newData = currentData.filter(function (item) {
+                if (item.itemId == returnJson.item.itemId) {
+                    item = returnJson.item;
+                }
+                return item;
+            })
+            console.log("New Data",newData);
+            capture.setState({
+                data: newData,
+            }, function () {
+                capture.incrementView();
+            })
+        });
+    },
+    incrementView: function () {
+        var data = this.state.data;
+        var increment;
         if (this.state.activeView == data.length) {
             increment = this.state.activeView;
         } else {
             increment = this.state.activeView + 1;
         }
-
         data = data.filter(function (item) {
             if (item.itemId == increment) {
                 item.active = true;
@@ -155,7 +187,7 @@
                     }
                 </div>
                 <div className="body-control-shelf">
-                    <button className="draft-button next-button" onClick={this.incrementView} >Next Step</button>
+                    <button className="draft-button next-button" onClick={this.validateItem} >Next Step</button>
                 </div>
             </div>
         )
